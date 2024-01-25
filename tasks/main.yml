@@ -13,7 +13,7 @@
         - 'main.yml'
       paths: '../vars'
 
-- include: "{{ ansible_os_family }}.yml"
+- include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: main | Install firewalld packages
   package:
@@ -39,7 +39,7 @@
     - firewalld_enable
 
 - name: main | Add firewall services
-  include: "firewalld_service.yml zone={{ rule.zone }} services={{ rule.services }} state=enabled"
+  include_tasks: "firewalld_service.yml zone={{ rule.zone }} services={{ rule.services }} state=enabled"
   loop: "{{ firewalld_rules_add | default([]) }}"
   loop_control:
     loop_var: rule
@@ -50,7 +50,7 @@
     - rule
 
 - name: main | Add firewall port
-  include: "firewalld_port.yml zone={{ rule.zone }} ports={{ rule.ports }} state=enabled"
+  include_tasks: "firewalld_port.yml zone={{ rule.zone }} ports={{ rule.ports }} state=enabled"
   loop: "{{ firewalld_rules_add | default([]) }}"
   loop_control:
     loop_var: rule
@@ -61,7 +61,7 @@
     - rule
 
 - name: main | Remove firewall services
-  include: "firewalld_service.yml zone={{ rule.zone }} services={{ rule.services }} state=disabled"
+  include_tasks: "firewalld_service.yml zone={{ rule.zone }} services={{ rule.services }} state=disabled"
   loop: "{{ firewalld_rules_remove | default([]) }}"
   loop_control:
     loop_var: rule
@@ -72,7 +72,7 @@
     - rule
 
 - name: main | Remove firewall port
-  include: "firewalld_port.yml zone={{ rule.zone }} ports={{ rule.ports }} state=disabled"
+  include_tasks: "firewalld_port.yml zone={{ rule.zone }} ports={{ rule.ports }} state=disabled"
   loop: "{{ firewalld_rules_remove | default([]) }}"
   loop_control:
     loop_var: rule
@@ -83,7 +83,7 @@
     - rule
 
 - name: main | Assign interface to zone
-  include: "firewalld_interface.yml zone={{ itf.zone }} interfaces={{ itf.interfaces }} state={{ itf.state | default('enabled') | replace('present','enabled') | replace('absent','disabled') }}"
+  include_tasks: "firewalld_interface.yml zone={{ itf.zone }} interfaces={{ itf.interfaces }} state={{ itf.state | default('enabled') | replace('present','enabled') | replace('absent','disabled') }}"
   loop: "{{ firewalld_interfaces | default([]) }}"
   loop_control:
     loop_var: itf
